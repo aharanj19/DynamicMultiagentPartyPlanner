@@ -7,8 +7,20 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-title {
+    text-align: center;
+    color: white;
+    font-size: 32px;
+    padding: 20px;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
 }
 
 .container {
@@ -18,6 +30,7 @@ body {
     height: 100vh;
     gap: 15px;
     padding: 15px;
+    flex: 1;
 }
 
 /* LEFT SIDE - AGENTS */
