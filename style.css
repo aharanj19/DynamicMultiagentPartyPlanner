@@ -1,0 +1,369 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 200px 1fr 250px;
+    grid-template-rows: 1fr 120px;
+    height: 100vh;
+    gap: 15px;
+    padding: 15px;
+}
+
+/* LEFT SIDE - AGENTS */
+.agents-panel {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.agents-panel h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.agent-card {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.agent-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.agent-card.location {
+    background-color: #e74c3c;
+}
+
+.agent-card.weather {
+    background-color: #3498db;
+}
+
+.agent-card.food {
+    background-color: #f1c40f;
+    color: #333;
+}
+
+.agent-toggle {
+    width: 50px;
+    height: 26px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 2px solid white;
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.agent-toggle.enabled {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.agent-toggle::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    top: 1px;
+    left: 2px;
+    transition: all 0.3s ease;
+}
+
+.agent-toggle.enabled::after {
+    left: 27px;
+}
+
+.agent-name {
+    flex: 1;
+}
+
+/* MIDDLE SECTION - RESULTS */
+.results-panel {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.results-panel h2 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.result-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 5px solid;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-item.location {
+    border-left-color: #e74c3c;
+    background-color: #fadbd8;
+}
+
+.result-item.location .agent-title {
+    color: #e74c3c;
+    font-weight: 700;
+}
+
+.result-item.weather {
+    border-left-color: #3498db;
+    background-color: #d6eaf8;
+}
+
+.result-item.weather .agent-title {
+    color: #3498db;
+    font-weight: 700;
+}
+
+.result-item.food {
+    border-left-color: #f1c40f;
+    background-color: #fef5e7;
+}
+
+.result-item.food .agent-title {
+    color: #d4a40a;
+    font-weight: 700;
+}
+
+.agent-title {
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.agent-content {
+    color: #555;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.loading {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: currentColor;
+    border-radius: 50%;
+    animation: blink 0.6s infinite;
+}
+
+.loading:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* RIGHT SIDE - WORKFLOW TRACE */
+.trace-panel {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.trace-panel h2 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.trace-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-left: 3px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 12px;
+    color: #666;
+    animation: slideIn 0.3s ease;
+    position: relative;
+    padding-left: 15px;
+}
+
+.trace-item.location {
+    border-left-color: #e74c3c;
+    background-color: #fadbd8;
+    color: #c0392b;
+}
+
+.trace-item.weather {
+    border-left-color: #3498db;
+    background-color: #d6eaf8;
+    color: #2980b9;
+}
+
+.trace-item.food {
+    border-left-color: #f1c40f;
+    background-color: #fef5e7;
+    color: #d4a40a;
+}
+
+.trace-item.info {
+    border-left-color: #9b59b6;
+    background-color: #ebdef0;
+    color: #6c3483;
+}
+
+.trace-item.success {
+    border-left-color: #27ae60;
+    background-color: #d5f4e6;
+    color: #186a3b;
+}
+
+.trace-item.error {
+    border-left-color: #e74c3c;
+    background-color: #fadbd8;
+    color: #c0392b;
+}
+
+.trace-timestamp {
+    font-size: 10px;
+    color: #999;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* BOTTOM MIDDLE - INPUT */
+.input-panel {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    gap: 10px;
+}
+
+#userInput {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+#userInput:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+#submitBtn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#submitBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+#submitBtn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+#submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* SCROLLBAR STYLING */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.empty-state {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    margin-top: 20px;
+}

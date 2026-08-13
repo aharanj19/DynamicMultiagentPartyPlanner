@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Multi-Agent Party Planner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- LEFT SIDE - AGENTS -->
+        <div class="agents-panel">
+            <h2>Agents</h2>
+            <div class="agent-card location">
+                <span class="agent-name">📍 Location Planner</span>
+                <div class="agent-toggle" data-agent="location"></div>
+            </div>
+            <div class="agent-card weather">
+                <span class="agent-name">⛅ Weather Forecaster</span>
+                <div class="agent-toggle" data-agent="weather"></div>
+            </div>
+            <div class="agent-card food">
+                <span class="agent-name">🍽️ Food Planner</span>
+                <div class="agent-toggle" data-agent="food"></div>
+            </div>
+        </div>
+
+        <!-- MIDDLE SECTION - RESULTS -->
+        <div class="results-panel">
+            <h2>Results</h2>
+            <div id="resultsList">
+                <div class="empty-state">Results will appear here...</div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE - WORKFLOW TRACE -->
+        <div class="trace-panel">
+            <h2>Workflow Trace</h2>
+            <div id="traceList">
+                <div class="empty-state">Trace will appear here...</div>
+            </div>
+        </div>
+
+        <!-- BOTTOM MIDDLE - INPUT -->
+        <div class="input-panel">
+            <textarea 
+                id="userInput" 
+                placeholder="Enter your party planning request... (e.g., 'I want to plan a birthday party for 20 people next Saturday at the beach')"
+                rows="3"
+            ></textarea>
+            <button id="submitBtn">Submit</button>
+        </div>
+    </div>
+
+    <!-- UI Utilities -->
+    <script src="ui-utils.js"></script>
+
+    <!-- Orchestrator -->
+    <script src="orchestrator.js"></script>
+
+    <!-- Agent Implementations -->
+    <script src="location-agent.js"></script>
+    <script src="weather-agent.js"></script>
+    <script src="food-agent.js"></script>
+
+    <!-- Main Application -->
+    <script src="script.js"></script>
+</body>
+</html>
