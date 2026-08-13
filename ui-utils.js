@@ -35,6 +35,8 @@ function displayResult(agentType, content) {
  * Add trace message to the workflow trace panel
  */
 function addTrace(message, type = 'info') {
+    console.log(`[${type.toUpperCase()}] ${message}`);
+    
     const traceList = document.getElementById('traceList');
     
     // Remove empty state if it exists

@@ -17,6 +17,7 @@ class WeatherAgent {
 
     async call(userInput) {
         try {
+            console.log('WeatherAgent.call() - Input:', userInput);
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
@@ -43,8 +44,12 @@ class WeatherAgent {
             }
 
             const data = await response.json();
-            return data.choices[0].message.content;
+            console.log('WeatherAgent response:', data);
+            const content = data.choices[0].message.content;
+            console.log('WeatherAgent content:', content);
+            return content;
         } catch (error) {
+            console.error('WeatherAgent error:', error);
             throw new Error(`${this.name} failed: ${error.message}`);
         }
     }

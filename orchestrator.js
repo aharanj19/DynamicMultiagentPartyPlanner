@@ -6,6 +6,7 @@ const API_KEY = 'sk-vibe-summer-2026';
  */
 async function getOrchestratorDecision(userInput) {
     try {
+        console.log('Calling orchestrator with input:', userInput);
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
@@ -40,23 +41,31 @@ Use only the agents needed for this specific request. The array can have 1, 2, o
         }
 
         const data = await response.json();
+        console.log('Orchestrator response:', data);
         const content = data.choices[0].message.content.trim();
+        console.log('Orchestrator content:', content);
         
         // Parse JSON response
         try {
             const result = JSON.parse(content);
+            console.log('Parsed agents:', result.agents);
             return result.agents || [];
         } catch (e) {
             // Try to extract JSON from the response
             const jsonMatch = content.match(/\{[\s\S]*\}/);
             if (jsonMatch) {
                 const result = JSON.parse(jsonMatch[0]);
+                console.log('Extracted agents:', result.agents);
                 return result.agents || [];
             }
+            console.log('Failed to parse agents, returning empty array');
             return [];
         }
     } catch (error) {
-        addTrace(`Orchestrator error: ${error.message}`, 'error');
+        console.error('Orchestrator error:', error);
+        if (typeof addTrace !== 'undefined') {
+            addTrace(`Orchestrator error: ${error.message}`, 'error');
+        }
         return [];
     }
 }

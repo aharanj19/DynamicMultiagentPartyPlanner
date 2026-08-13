@@ -17,6 +17,7 @@ class LocationAgent {
 
     async call(userInput) {
         try {
+            console.log('LocationAgent.call() - Input:', userInput);
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
@@ -43,8 +44,12 @@ class LocationAgent {
             }
 
             const data = await response.json();
-            return data.choices[0].message.content;
+            console.log('LocationAgent response:', data);
+            const content = data.choices[0].message.content;
+            console.log('LocationAgent content:', content);
+            return content;
         } catch (error) {
+            console.error('LocationAgent error:', error);
             throw new Error(`${this.name} failed: ${error.message}`);
         }
     }

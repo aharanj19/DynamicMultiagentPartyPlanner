@@ -17,6 +17,7 @@ class FoodAgent {
 
     async call(userInput) {
         try {
+            console.log('FoodAgent.call() - Input:', userInput);
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
@@ -43,8 +44,12 @@ class FoodAgent {
             }
 
             const data = await response.json();
-            return data.choices[0].message.content;
+            console.log('FoodAgent response:', data);
+            const content = data.choices[0].message.content;
+            console.log('FoodAgent content:', content);
+            return content;
         } catch (error) {
+            console.error('FoodAgent error:', error);
             throw new Error(`${this.name} failed: ${error.message}`);
         }
     }
