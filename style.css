@@ -8,7 +8,8 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
@@ -379,4 +380,72 @@ body {
     color: #999;
     font-size: 14px;
     margin-top: 20px;
+}
+
+/* THINKING DISPLAY STYLING */
+.result-item.thinking {
+    opacity: 0.9;
+    position: relative;
+}
+
+.thinking-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+}
+
+.thinking-spinner {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-weight: 600;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.thinking-block {
+    width: 100%;
+}
+
+.thinking-label {
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.thinking-text {
+    color: #555;
+    line-height: 1.7;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background-color: rgba(102, 126, 234, 0.05);
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 3px solid #667eea;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.result-item.complete {
+    opacity: 1;
+}
+
+.result-item.complete .thinking-text {
+    background-color: rgba(39, 174, 96, 0.05);
+    border-left-color: #27ae60;
 }

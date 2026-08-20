@@ -1,5 +1,4 @@
-const API_URL = 'https://vibe-proxy-gqv4.onrender.com/v1/chat/completions';
-const API_KEY = 'sk-vibe-summer-2026';
+const WEATHER_API_URL = '/api/chat';
 
 /**
  * Weather Forecaster Agent - Provides weather forecasts and climate considerations
@@ -18,11 +17,11 @@ class WeatherAgent {
     async call(userInput) {
         try {
             console.log('WeatherAgent.call() - Input:', userInput);
-            const response = await fetch(API_URL, {
+            
+            const response = await fetch(WEATHER_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     model: 'class-chat-model',
@@ -45,8 +44,10 @@ class WeatherAgent {
 
             const data = await response.json();
             console.log('WeatherAgent response:', data);
+            
             const content = data.choices[0].message.content;
             console.log('WeatherAgent content:', content);
+            
             return content;
         } catch (error) {
             console.error('WeatherAgent error:', error);

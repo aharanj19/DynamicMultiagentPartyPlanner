@@ -14,9 +14,9 @@ const agentInstances = {
 };
 
 const agentStates = {
-    location: false,
-    weather: false,
-    food: false
+    location: true,
+    weather: true,
+    food: true
 };
 
 let isProcessing = false;
@@ -29,16 +29,19 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 function initializeApp() {
     console.log('Initializing application...');
     
-    // Initialize toggle handlers
+    // Initialize all agent toggles as enabled
     document.querySelectorAll('.agent-toggle').forEach(toggle => {
-    toggle.addEventListener('click', (e) => {
-        e.stopPropagation();
         const agentType = toggle.dataset.agent;
-        agentStates[agentType] = !agentStates[agentType];
-        toggle.classList.toggle('enabled');
-        addTrace(`${agents[agentType].name} ${agentStates[agentType] ? 'enabled' : 'disabled'}`, 'info');
+        // Set enabled class for all agents
+        toggle.classList.add('enabled');
+        
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            agentStates[agentType] = !agentStates[agentType];
+            toggle.classList.toggle('enabled');
+            addTrace(`${agents[agentType].name} ${agentStates[agentType] ? 'enabled' : 'disabled'}`, 'info');
+        });
     });
-});
 
     // Submit button handler
     document.getElementById('submitBtn').addEventListener('click', async () => {
@@ -79,18 +82,24 @@ async function processRequest(userInput) {
         // Step 1: Get orchestrator decision
         addTrace('🤖 Orchestrator analyzing request...', 'info');
         const agentsToRun = await getOrchestratorDecision(userInput);
+        console.log('Agents to run (from orchestrator):', agentsToRun);
+        console.log('Agent states (enabled/disabled):', agentStates);
 
-        if (agentsToRun.length === 0) {
-            addTrace('No suitable agents found for this request', 'error');
+        // Filter agents by which ones are enabled
+        const enabledAgents = agentsToRun.filter(agent => agentStates[agent]);
+        console.log('Enabled agents:', enabledAgents);
+
+        if (enabledAgents.length === 0) {
+            addTrace('No enabled agents selected for this request', 'error');
             isProcessing = false;
             document.getElementById('submitBtn').disabled = false;
             return;
         }
 
-        addTrace(`Orchestrator selected: ${agentsToRun.map(a => agents[a].name).join(', ')}`, 'success');
+        addTrace(`Running enabled agents: ${enabledAgents.map(a => agents[a].name).join(', ')}`, 'success');
 
-        // Step 2: Run selected agents
-        for (const agentType of agentsToRun) {
+        // Step 2: Run selected enabled agents
+        for (const agentType of enabledAgents) {
             const agentConfig = agents[agentType];
             addTrace(`Running ${agentConfig.name}...`, agentType);
             
@@ -102,6 +111,7 @@ async function processRequest(userInput) {
                 console.log(`Calling ${agentType} agent...`);
                 const response = await agent.call(userInput);
                 console.log(`${agentType} response:`, response);
+                
                 displayResult(agentType, response);
                 addTrace(`${agentConfig.name} completed`, 'success');
             } catch (error) {
@@ -113,3 +123,9 @@ async function processRequest(userInput) {
         addTrace('Processing complete', 'success');
     } catch (error) {
         console.error('Error in processRequest:', error);
+        addTrace(`Processing failed: ${error.message}`, 'error');
+    } finally {
+        isProcessing = false;
+        document.getElementById('submitBtn').disabled = false;
+    }
+}

@@ -10,10 +10,66 @@ const agents = {
 };
 
 /**
+ * Display thinking process for an agent
+ */
+function displayThinking(agentType) {
+    console.log('displayThinking called for:', agentType);
+    const resultsList = document.getElementById('resultsList');
+    
+    if (!resultsList) {
+        console.error('resultsList element not found!');
+        return;
+    }
+    
+    // Remove empty state if it exists
+    const emptyState = resultsList.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
+
+    const thinkingDiv = document.createElement('div');
+    thinkingDiv.className = `result-item ${agentType} thinking`;
+    thinkingDiv.id = `thinking-${agentType}`;
+    thinkingDiv.innerHTML = `
+        <div class="agent-title">${agents[agentType].emoji} ${agents[agentType].name}</div>
+        <div class="agent-content thinking-content">
+            <div class="thinking-spinner">🤔 Thinking</div>
+        </div>
+    `;
+
+    resultsList.appendChild(thinkingDiv);
+    resultsList.scrollTop = resultsList.scrollHeight;
+    console.log('Thinking div created for:', agentType);
+    return thinkingDiv;
+}
+
+/**
+ * Update thinking display with thinking blocks
+ */
+function updateThinking(agentType, thinkingText) {
+    const thinkingDiv = document.getElementById(`thinking-${agentType}`);
+    if (thinkingDiv) {
+        const contentDiv = thinkingDiv.querySelector('.agent-content');
+        contentDiv.innerHTML = `
+            <div class="thinking-block">
+                <div class="thinking-label">🧠 AI Thinking Process:</div>
+                <div class="thinking-text">${escapeHtml(thinkingText)}</div>
+            </div>
+        `;
+    }
+}
+
+/**
  * Display agent result in the results panel
  */
 function displayResult(agentType, content) {
+    console.log('displayResult called for:', agentType, 'with content:', content);
     const resultsList = document.getElementById('resultsList');
+    
+    if (!resultsList) {
+        console.error('resultsList element not found!');
+        return;
+    }
     
     // Remove empty state if it exists
     const emptyState = resultsList.querySelector('.empty-state');
@@ -29,6 +85,8 @@ function displayResult(agentType, content) {
     `;
 
     resultsList.appendChild(resultDiv);
+    resultsList.scrollTop = resultsList.scrollHeight;
+    console.log('Result div created and added for:', agentType);
 }
 
 /**

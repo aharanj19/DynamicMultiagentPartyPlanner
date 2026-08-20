@@ -1,5 +1,5 @@
-const API_URL = 'https://vibe-proxy-gqv4.onrender.com/v1/chat/completions';
-const API_KEY = 'sk-vibe-summer-2026';
+const ORCHESTRATOR_API_URL = '/api/chat';
+const AVAILABLE_AGENTS = ['location', 'weather', 'food'];
 
 /**
  * Orchestrator - Analyzes user requests and determines which agents to use
@@ -7,11 +7,10 @@ const API_KEY = 'sk-vibe-summer-2026';
 async function getOrchestratorDecision(userInput) {
     try {
         console.log('Calling orchestrator with input:', userInput);
-        const response = await fetch(API_URL, {
+        const response = await fetch(ORCHESTRATOR_API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 model: 'class-chat-model',
@@ -42,30 +41,33 @@ Use only the agents needed for this specific request. The array can have 1, 2, o
 
         const data = await response.json();
         console.log('Orchestrator response:', data);
-        const content = data.choices[0].message.content.trim();
+        const content = data.choices?.[0]?.message?.content?.trim();
+        if (!content) {
+            throw new Error('Orchestrator returned an empty response');
+        }
         console.log('Orchestrator content:', content);
         
         // Parse JSON response
         try {
             const result = JSON.parse(content);
             console.log('Parsed agents:', result.agents);
-            return result.agents || [];
+            return Array.isArray(result.agents) ? result.agents : AVAILABLE_AGENTS;
         } catch (e) {
             // Try to extract JSON from the response
             const jsonMatch = content.match(/\{[\s\S]*\}/);
             if (jsonMatch) {
                 const result = JSON.parse(jsonMatch[0]);
                 console.log('Extracted agents:', result.agents);
-                return result.agents || [];
+                return Array.isArray(result.agents) ? result.agents : AVAILABLE_AGENTS;
             }
-            console.log('Failed to parse agents, returning empty array');
-            return [];
+            console.log('Failed to parse agents, using all available agents');
+            return AVAILABLE_AGENTS;
         }
     } catch (error) {
         console.error('Orchestrator error:', error);
         if (typeof addTrace !== 'undefined') {
-            addTrace(`Orchestrator error: ${error.message}`, 'error');
+            addTrace(`Orchestrator unavailable; running all enabled agents`, 'info');
         }
-        return [];
+        return AVAILABLE_AGENTS;
     }
 }
