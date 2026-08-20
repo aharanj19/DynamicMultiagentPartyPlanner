@@ -14,21 +14,29 @@ const PROXY_PORT = 3001;
 const server = http.createServer((req, res) => {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Content-Type', 'application/json');
 
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
-        res.writeHead(200);
+        res.writeHead(200, { 'Access-Control-Allow-Methods': 'POST, OPTIONS' });
         res.end();
         return;
     }
 
     // Only accept POST requests to /api/chat
-    if (req.method !== 'POST' || req.url !== '/api/chat') {
+    if (req.url !== '/api/chat') {
         res.writeHead(404);
         res.end(JSON.stringify({ error: 'Not found' }));
+        return;
+    }
+
+    if (req.method !== 'POST') {
+        res.writeHead(405, {
+            'Allow': 'POST, OPTIONS'
+        });
+        res.end(JSON.stringify({ error: 'Method not allowed. Use POST for /api/chat.' }));
         return;
     }
 
@@ -43,12 +51,13 @@ const server = http.createServer((req, res) => {
             const requestData = JSON.parse(body);
 
             // Forward request to external API
+            const payload = JSON.stringify(requestData);
             const options = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${API_KEY}`,
-                    'Content-Length': JSON.stringify(requestData).length
+                    'Content-Length': Buffer.byteLength(payload)
                 }
             };
 
@@ -80,7 +89,7 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify({ error: 'Failed to reach external API' }));
             });
 
-            externalReq.write(JSON.stringify(requestData));
+            externalReq.write(payload);
             externalReq.end();
         } catch (error) {
             console.error('Error parsing request:', error);
