@@ -26,20 +26,48 @@ console.log('App initialized with agents:', Object.keys(agentInstances));
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', initializeApp);
 
+function setAgentEnabled(agentType, enabled) {
+    if (!agentType || !agents[agentType]) {
+        return;
+    }
+
+    agentStates[agentType] = enabled;
+    const toggle = document.querySelector(`.agent-toggle[data-agent="${agentType}"]`);
+    if (toggle) {
+        updateAgentToggleUI(toggle, enabled);
+    }
+    if (typeof addTrace !== 'undefined') {
+        addTrace(`${agents[agentType].name} ${enabled ? 'enabled' : 'disabled'}`, 'info');
+    }
+}
+
+function updateAgentToggleUI(toggle, enabled) {
+    const agentCard = toggle.closest('.agent-card');
+
+    toggle.classList.toggle('enabled', enabled);
+    toggle.classList.toggle('disabled', !enabled);
+    toggle.setAttribute('aria-pressed', String(enabled));
+    toggle.title = enabled ? 'Enabled' : 'Disabled';
+    toggle.innerHTML = `<span class="toggle-text">${enabled ? 'ON' : 'OFF'}</span>`;
+
+    if (agentCard) {
+        agentCard.classList.toggle('disabled', !enabled);
+    }
+}
+
 function initializeApp() {
     console.log('Initializing application...');
     
     // Initialize all agent toggles as enabled
     document.querySelectorAll('.agent-toggle').forEach(toggle => {
         const agentType = toggle.dataset.agent;
-        // Set enabled class for all agents
-        toggle.classList.add('enabled');
+        agentStates[agentType] = true;
+        updateAgentToggleUI(toggle, true);
         
         toggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            agentStates[agentType] = !agentStates[agentType];
-            toggle.classList.toggle('enabled');
-            addTrace(`${agents[agentType].name} ${agentStates[agentType] ? 'enabled' : 'disabled'}`, 'info');
+            const nextState = !agentStates[agentType];
+            setAgentEnabled(agentType, nextState);
         });
     });
 
@@ -111,12 +139,17 @@ async function processRequest(userInput) {
                 console.log(`Calling ${agentType} agent...`);
                 const response = await agent.call(userInput);
                 console.log(`${agentType} response:`, response);
+
+                if (!response || !String(response).trim()) {
+                    throw new Error('No result produced');
+                }
                 
                 displayResult(agentType, response);
                 addTrace(`${agentConfig.name} completed`, 'success');
             } catch (error) {
                 console.error(`Error calling ${agentType}:`, error);
                 addTrace(`${agentConfig.name} failed: ${error.message}`, 'error');
+                setAgentEnabled(agentType, false);
             }
         }
 
